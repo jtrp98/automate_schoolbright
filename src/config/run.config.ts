@@ -1,26 +1,22 @@
 import { RunMode } from "../core/types";
 
+export type EnvironmentMode = "dev" | "uat" | "prod";
+
 export interface RunConfig {
-  mode: RunMode;
-
-  domain?: string;
-
-  module?: string;
-
-  page?: string;
-
-  tags?: string[];
-
+  runmode: RunMode;
+  mode: EnvironmentMode;
+  module: string;
+  submodule?: string;
+  page: string;
   headed?: boolean;
-
   retry?: number;
-
   timeout?: number;
 }
 
-export const DefaultRunConfig: RunConfig = {
-  mode: "NORMAL",
+export const DefaultRunConfig: Omit<RunConfig, "module" | "page"> = {
+  runmode: "normal",
+  mode: "dev",
   headed: false,
   retry: 0,
-  timeout: 30000
+  timeout: 30000,
 };

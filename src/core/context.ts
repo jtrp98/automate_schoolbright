@@ -1,7 +1,7 @@
 import { Page } from "@playwright/test";
-import { RunConfig } from "./types";
+import { BaseAction } from "../action/baseaction";
 
 export interface ExecutionContext {
   page: Page;
-  config: RunConfig;
+  action: BaseAction;
 }

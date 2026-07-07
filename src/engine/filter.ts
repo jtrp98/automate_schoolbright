@@ -8,7 +8,23 @@ export class Filter {
         config: RunConfig
     ): TestCase[] {
 
-        return testCases.filter(x => x.enable);
+        return testCases.filter(testCase => {
+
+            if (!testCase.enable) {
+
+                return false;
+
+            }
+
+            if (config.runmode === "full") {
+
+                return true;
+
+            }
+
+            return testCase.mode === config.runmode;
+
+        });
 
     }
 

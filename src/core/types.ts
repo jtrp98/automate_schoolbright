@@ -1,44 +1,21 @@
-export type RunMode =
-  | "SMOKE"
-  | "NORMAL"
-  | "HAPPY_FLOW"
-  | "FULL"
-  | "DOMAIN"
-  | "DEBUG";
-
-export type FunctionType =
-  | "SEARCH"
-  | "EXPORT"
-  | "PRINT"
-  | "LOGIN"
-  | "CREATE"
-  | "UPDATE"
-  | "DELETE";
+export type RunMode = "normal" | "smoke" | "regression" | "full";
 
 export interface TestCase {
-  id: string;
-  module: string;
-  page: string;
-  function: FunctionType;
+  tcId: string;
+  expected: string;
+  function: string;
+  mode: RunMode;
   dataId: string;
-  pattern?: string;
-  tag?: string;
   enable: boolean;
+  subModule: string;
 }
 
 export interface TestData {
-  id: string;
+  dataId: string;
   values: Record<string, unknown>;
-}
-
-export interface RunConfig {
-  mode: RunMode;
-  domains?: string[];
-  pages?: string[];
-  tags?: string[];
 }
 
 export interface ExecutionResult {
   success: boolean;
-  message?: string;
+  message: string;
 }

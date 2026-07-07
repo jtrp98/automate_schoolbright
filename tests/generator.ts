@@ -1,60 +1,35 @@
 import { test } from "@playwright/test";
 import { Loader } from "../src/engine/loader";
-import { LoginExecutor } from "../src/modules/login/login.excecutor";
-
+import { Filter } from "../src/engine/filter";
+import { Runner } from "../src/engine/runner";
+import { parseCliArgs } from "../src/engine/cli";
 
 export async function generateTests() {
 
+    const config = parseCliArgs();
 
-    const loader =
-        new Loader();
+    const loader = new Loader();
+    const filter = new Filter();
+    const runner = new Runner();
 
+    const testCases = await loader.loadTestCases(config.module, config.page, config.submodule);
+    const testData = await loader.loadTestData(config.module, config.page);
+    const filteredTestCases = filter.execute(testCases, config);
 
+    for (const testCase of filteredTestCases) {
 
-    const testCases =
-        await loader.loadTestCase(
-            "Login"
-        );
+        test(`${testCase.tcId} - ${testCase.expected}`, async ({ page }) => {
 
+            const data = runner.resolveTestData(testCase, testData);
+            const result = await runner.runTestCase(page, testCase, data);
 
-    const testData =
-        await loader.loadTestData(
-            "Login_Data"
-        );
+            if (!result.success) {
 
-    for (const tc of testCases) {
-
-
-        if (tc.Enable !== "TRUE")
-            continue;
-
-        test(`${tc.TC_ID} - ${tc.Expected}`, async ({ page }) => {
-
-            const executor = new LoginExecutor();
-
-            let data: any = null;
-
-            if (tc.Data_ID !== "-") {
-
-                data = testData.find(x => x.Data_ID === tc.Data_ID);
+                throw new Error(`${testCase.tcId} failed: ${result.message}`);
 
             }
 
-            await executor.execute(
-                page,
-                {
-                    mode: tc.Mode,
-                    school: data?.School,
-                    username: data?.Username,
-                    password: data?.Password,
-                    expected: data?.Expected
-                }
-            );
-
-
-        }
-        );
-
+        });
 
     }
 

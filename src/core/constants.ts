@@ -1,18 +1,28 @@
 export const RUN_MODE = {
-  SMOKE: "SMOKE",
-  NORMAL: "NORMAL",
-  HAPPY_FLOW: "HAPPY_FLOW",
-  FULL: "FULL",
-  DOMAIN: "DOMAIN",
-  DEBUG: "DEBUG",
+  NORMAL: "normal",
+  SMOKE: "smoke",
+  REGRESSION: "regression",
+  FULL: "full",
 } as const;
 
-export const FUNCTION = {
-  SEARCH: "SEARCH",
-  EXPORT: "EXPORT",
-  PRINT: "PRINT",
-  LOGIN: "LOGIN",
-  CREATE: "CREATE",
-  UPDATE: "UPDATE",
-  DELETE: "DELETE",
+export const MODULES = [
+  "login",
+  "personal-info",
+  "academic",
+  "student-affairs",
+  "general-admin",
+  "accounting",
+  "store",
+  "report",
+  "initial-setup",
+] as const;
+
+export const SHEET_COLUMNS = {
+  TC_ID: "TC_ID",
+  EXPECTED: "Expected",
+  FUNCTION: "Function",
+  MODE: "Mode",
+  DATA_ID: "Data_ID",
+  ENABLE: "Enable",
+  SUB_MODULE: "SubModule",
 } as const;

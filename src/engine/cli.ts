@@ -1,57 +1,43 @@
-import { DefaultRunConfig, EnvironmentMode, RunConfig } from "../config/run.config";
-import { RunMode } from "../core/types";
+import type { RunMode } from "../core/types";
+import type { AppEnv } from "../config/environment";
 
-export function parseCliArgs(argv: string[] = process.argv.slice(2)): RunConfig {
+export interface RunParams {
 
-    const args = new Map<string, string>();
+    module: string;
 
-    for (let i = 0; i < argv.length; i++) {
+    subModule?: string;
 
-        const token = argv[i];
+    page: string;
 
-        if (!token.startsWith("--")) {
+    runMode: RunMode;
 
-            continue;
+    env: AppEnv;
 
-        }
+}
 
-        const key = token.slice(2);
-        const next = argv[i + 1];
-        const hasValue = next !== undefined && !next.startsWith("--");
+export function getRunParams(): RunParams {
 
-        args.set(key, hasValue ? next : "true");
-
-        if (hasValue) {
-
-            i++;
-
-        }
-
-    }
-
-    const module = args.get("module");
-    const page = args.get("page");
+    const module = process.env.MODULE;
+    const page = process.env.PAGE;
 
     if (!module) {
 
-        throw new Error("Missing required CLI argument: --module");
+        throw new Error("Missing required environment variable: MODULE");
 
     }
 
     if (!page) {
 
-        throw new Error("Missing required CLI argument: --page");
+        throw new Error("Missing required environment variable: PAGE");
 
     }
 
     return {
-        ...DefaultRunConfig,
-        runmode: (args.get("runmode") as RunMode | undefined) ?? DefaultRunConfig.runmode,
-        mode: (args.get("mode") as EnvironmentMode | undefined) ?? DefaultRunConfig.mode,
         module,
-        submodule: args.get("submodule"),
+        subModule: process.env.SUBMODULE,
         page,
-        headed: args.has("headed") ? args.get("headed") !== "false" : DefaultRunConfig.headed
+        runMode: (process.env.RUNMODE as RunMode | undefined) ?? "normal",
+        env: (process.env.ENV as AppEnv | undefined) ?? "dev"
     };
 
 }

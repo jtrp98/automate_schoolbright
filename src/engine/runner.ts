@@ -1,56 +1,19 @@
-import { Page } from "@playwright/test";
-import { createRegistry, Registry } from "./registry";
-import { BaseAction } from "../action/baseaction";
-import { ExecutionContext } from "../core/context";
-import { ExecutionResult, TestCase, TestData } from "../core/types";
+import type { TestCase } from "../core/types";
 
-export class Runner {
+export function screenshotName(tc: TestCase, suffix: string): string {
 
-    private readonly registry: Registry;
+    return `${tc.tcId}-${suffix}`.replace(/[^a-zA-Z0-9-_]/g, "_");
 
-    constructor() {
+}
 
-        this.registry = createRegistry();
+export function logStart(tc: TestCase): void {
 
-    }
+    console.log(`[${new Date().toISOString()}] > ${tc.tcId} started`);
 
-    resolveTestData(testCase: TestCase, testData: TestData[]): TestData {
+}
 
-        if (testCase.dataId === "-") {
+export function logEnd(tc: TestCase, durationMs: number): void {
 
-            return { dataId: "-", values: {} };
-
-        }
-
-        const data = testData.find(item => item.dataId === testCase.dataId);
-
-        if (!data) {
-
-            throw new Error(
-                `Test data not found for Data_ID "${testCase.dataId}" (${testCase.tcId})`
-            );
-
-        }
-
-        return data;
-
-    }
-
-    async runTestCase(
-        page: Page,
-        testCase: TestCase,
-        data: TestData
-    ): Promise<ExecutionResult> {
-
-        const executor = this.registry.resolve(testCase.function);
-
-        const context: ExecutionContext = {
-            page,
-            action: new BaseAction(page)
-        };
-
-        return executor.execute(context, testCase, data);
-
-    }
+    console.log(`[${new Date().toISOString()}] < ${tc.tcId} finished in ${durationMs}ms`);
 
 }

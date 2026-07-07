@@ -1,40 +1,52 @@
-import { Environment } from "../config/environment";
-import { google } from "googleapis";
+import { google, sheets_v4 } from "googleapis";
 import fs from "fs";
+import { Environment } from "../config/environment";
 
-export class GoogleSheetClient {
-    private sheets;
+let sheetsClient: sheets_v4.Sheets | undefined;
 
-    constructor() {
-        const credentials = JSON.parse(
-            fs.readFileSync(
-                Environment.GOOGLE_SERVICE_ACCOUNT_PATH,
-                "utf8"
-            ));
+function getSheetsClient(): sheets_v4.Sheets {
 
-        const auth = new google.auth.GoogleAuth({
-            credentials,
-            scopes: [
-                "https://www.googleapis.com/auth/spreadsheets.readonly"
-            ]
-        });
+    if (sheetsClient) {
 
-        this.sheets = google.sheets({
-            version: "v4",
-            auth
-        });
+        return sheetsClient;
 
     }
 
-    async getSheetData(spreadsheetId: string, range: string): Promise<string[][]> {
+    const credentials = JSON.parse(
+        fs.readFileSync(Environment.GOOGLE_SERVICE_ACCOUNT_PATH, "utf8")
+    );
 
-        const response = await this.sheets.spreadsheets.values.get({
-            spreadsheetId,
-            range
-        });
+    const auth = new google.auth.GoogleAuth({
+        credentials,
+        scopes: ["https://www.googleapis.com/auth/spreadsheets.readonly"]
+    });
 
-        return (response.data.values ?? []) as string[][];
+    sheetsClient = google.sheets({ version: "v4", auth });
 
-    }
+    return sheetsClient;
+
+}
+
+export async function listSheetTitles(spreadsheetId: string): Promise<string[]> {
+
+    const response = await getSheetsClient().spreadsheets.get({
+        spreadsheetId,
+        fields: "sheets.properties.title"
+    });
+
+    return (response.data.sheets ?? [])
+        .map(sheet => sheet.properties?.title)
+        .filter((title): title is string => Boolean(title));
+
+}
+
+export async function getSheetValues(spreadsheetId: string, range: string): Promise<string[][]> {
+
+    const response = await getSheetsClient().spreadsheets.values.get({
+        spreadsheetId,
+        range
+    });
+
+    return (response.data.values ?? []) as string[][];
 
 }

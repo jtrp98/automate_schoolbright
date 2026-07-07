@@ -1,56 +1,35 @@
-import { Executor } from "../core/interfaces";
-import { registerLoginModule } from "../modules/[0]login/login.registry";
-import { registerPersonalInfoModule } from "../modules/[1]personal-info/personal-info.registry";
-import { registerAcademicModule } from "../modules/[2]academic/academic.registry";
-import { registerStudentAffairsModule } from "../modules/[3]student-affairs/student-affairs.registry";
-import { registerGeneralAdminModule } from "../modules/[4]general-admin/general-admin.registry";
-import { registerAccountingModule } from "../modules/[5]accounting/accounting.registry";
-import { registerStoreModule } from "../modules/[6]store/store.registry";
-import { registerReportModule } from "../modules/[7]report/report.registry";
-import { registerInitialSetupModule } from "../modules/[8]initial-setup/initial-setup.registry";
+import type { ExecutorMap } from "../core/types";
 
-type ExecutorClass = new () => Executor;
+export async function resolveExecutor(
 
-export class Registry {
+    module: string,
+    submodule: string,
+    page: string
 
-    private readonly executors = new Map<string, ExecutorClass>();
+): Promise<ExecutorMap> {
 
-    register(functionKey: string, executorClass: ExecutorClass): void {
+    const path =
+        `../modules/${module}/${submodule}/${page}/${page}.executor`;
 
-        this.executors.set(functionKey, executorClass);
+    try {
 
-    }
+        const mod = await import(path);
 
-    resolve(functionKey: string): Executor {
+        if (!mod.executor) {
 
-        const ExecutorClass = this.executors.get(functionKey);
-
-        if (!ExecutorClass) {
-
-            throw new Error(`Executor not found for function: ${functionKey}`);
+            throw new Error(`File exists but does not export "executor"`);
 
         }
 
-        return new ExecutorClass();
+        return mod.executor as ExecutorMap;
 
     }
+    catch (error) {
 
-}
+        throw new Error(
+            `Cannot resolve executor at modules/${module}/${submodule}/${page}: ${String(error)}`
+        );
 
-export function createRegistry(): Registry {
-
-    const registry = new Registry();
-
-    registerLoginModule(registry);
-    registerPersonalInfoModule(registry);
-    registerAcademicModule(registry);
-    registerStudentAffairsModule(registry);
-    registerGeneralAdminModule(registry);
-    registerAccountingModule(registry);
-    registerStoreModule(registry);
-    registerReportModule(registry);
-    registerInitialSetupModule(registry);
-
-    return registry;
+    }
 
 }

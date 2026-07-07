@@ -1,21 +1,41 @@
+import type { Page } from "@playwright/test";
+import type { BaseAction } from "../action/baseaction";
+
 export type RunMode = "normal" | "smoke" | "regression" | "full";
 
 export interface TestCase {
-  tcId: string;
-  expected: string;
-  function: string;
-  mode: RunMode;
-  dataId: string;
-  enable: boolean;
-  subModule: string;
+
+    tcId: string;                       // TC_ID
+
+    expected: string;                   // Expected
+
+    function: string;                   // Function (key in ExecutorMap)
+
+    mode: RunMode;                      // Mode
+
+    dataId: string;                     // Data_ID
+
+    enable: boolean;                    // Enable
+
+    subModule: string;                  // SubModule
+
+    data: Record<string, unknown>;      // Resolved from Data_ID by the Loader
+
 }
 
-export interface TestData {
-  dataId: string;
-  values: Record<string, unknown>;
+export interface ExecutionContext {
+
+    page: Page;
+
+    action: BaseAction;
+
 }
 
-export interface ExecutionResult {
-  success: boolean;
-  message: string;
-}
+export type Workflow = (
+
+    ctx: ExecutionContext,
+    tc: TestCase
+
+) => Promise<void>;
+
+export type ExecutorMap = Record<string, Workflow>;

@@ -2,6 +2,8 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+export type AppEnv = "dev" | "uat" | "prod";
+
 export type SheetModule =
     | "personal-info"
     | "academic"
@@ -27,7 +29,6 @@ function readModuleSheetIds(envPrefix: string): ModuleSheetIds {
 }
 
 // One Google Sheet file pair (test case + test data) per business module.
-// "login" has no sheet of its own — its cases/data live in the personal-info sheets.
 const MODULE_SHEET_IDS: Record<SheetModule, ModuleSheetIds> = {
     "personal-info": readModuleSheetIds("PERSONAL_INFO"),
     "academic": readModuleSheetIds("ACADEMIC"),
@@ -39,19 +40,17 @@ const MODULE_SHEET_IDS: Record<SheetModule, ModuleSheetIds> = {
     "initial-setup": readModuleSheetIds("INITIAL_SETUP")
 };
 
-const LOGIN_SHEET_ALIAS: SheetModule = "personal-info";
-
 export const Environment = {
+    ENV: (process.env.ENV as AppEnv | undefined) ?? "dev",
+
     BYPASS: process.env.BYPASS,
     SYSTEM_URL: process.env.SYSTEM_URL || "",
-
     ACADEMIC_URL: process.env.ACADEMIC_URL || "",
     GOOGLE_SERVICE_ACCOUNT_PATH: process.env.GOOGLE_SERVICE_ACCOUNT_PATH || "",
 
     getModuleSheetIds(module: string): ModuleSheetIds {
 
-        const resolvedModule = module === "login" ? LOGIN_SHEET_ALIAS : module as SheetModule;
-        const sheetIds = MODULE_SHEET_IDS[resolvedModule];
+        const sheetIds = MODULE_SHEET_IDS[module as SheetModule];
 
         if (!sheetIds) {
 
@@ -64,4 +63,9 @@ export const Environment = {
         return sheetIds;
 
     }
+};
+
+export const Urls = {
+    loginBypass: Environment.BYPASS,
+    dashboard: "/AdminMain.aspx"
 };

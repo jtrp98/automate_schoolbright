@@ -14,14 +14,24 @@ function readPageFiles(module: string, subModule: string | undefined, page: stri
 
     const moduleDir = path.resolve(DATA_DIR, module);
 
-    const subModules = subModule
-        ? [subModule]
-        : fs.readdirSync(moduleDir, { withFileTypes: true })
-            .filter(entry => entry.isDirectory())
-            .map(entry => entry.name);
+    if (subModule) {
 
-    return subModules
-        .map(sub => path.join(moduleDir, sub, `${page}.json`))
+        const filePath = path.join(moduleDir, subModule, `${page}.json`);
+
+        return fs.existsSync(filePath) ? readTestCaseFile(filePath) : [];
+
+    }
+
+    const subModuleDirs = fs.readdirSync(moduleDir, { withFileTypes: true })
+        .filter(entry => entry.isDirectory())
+        .map(entry => entry.name);
+
+    const filePaths = [
+        path.join(moduleDir, `${page}.json`),
+        ...subModuleDirs.map(sub => path.join(moduleDir, sub, `${page}.json`))
+    ];
+
+    return filePaths
         .filter(filePath => fs.existsSync(filePath))
         .flatMap(readTestCaseFile);
 

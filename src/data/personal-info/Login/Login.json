@@ -1,0 +1,42 @@
+[
+  {
+    "tcId": "TC_0001",
+    "expected": "เข้าสู่ระบบสำเร็จ",
+    "function": "Login",
+    "mode": "full",
+    "dataId": "LOGIN-001",
+    "enable": true,
+    "subModule": "Login",
+    "data": {
+      "School": "Tangmo school (Test)",
+      "Username": "10010",
+      "Password": "01",
+      "Expected": ""
+    }
+  },
+  {
+    "tcId": "TC_0002",
+    "expected": "เข้าสู่ระบบไม่สำเร็จ ไม่มีรหัสผ่าน",
+    "function": "Login",
+    "mode": "full",
+    "dataId": "LOGIN-002",
+    "enable": true,
+    "subModule": "Login",
+    "data": {
+      "School": "Tangmo school (Test)",
+      "Username": "10010",
+      "Password": "wrong",
+      "Expected": "ไม่สามารถเข้าสู่ระบบได้ กรุณาตรวจสอบชื่อผู้ใช้หรือรหัสผ่านของท่านอีกครั้ง"
+    }
+  },
+  {
+    "tcId": "TC_0003",
+    "expected": "เข้าสู่ระบบสำเร็จ",
+    "function": "Login",
+    "mode": "normal",
+    "dataId": "-",
+    "enable": true,
+    "subModule": "Login",
+    "data": {}
+  }
+]

@@ -278,7 +278,8 @@ Google Sheets and the repo each own a different job:
 Rules:
 
 - Run `npm run sync-sheets` (`scripts/sync-sheets.ts`) to pull all 8 sheet files into `src/data/<module>/<submodule>/<page>.json`. Commit the result.
-- The test-case tab and its test-data tab(s) are not required to share an exact name. The sync script matches every data tab whose title equals the page name or starts with `<page>_` (e.g. page `Login` matches data tab `Login_Data`; page `x` matches both `x_add_data` and `x_delete_data`) and merges their rows into one `Data_ID` lookup for that page. A `Data_ID` duplicated across matched data tabs fails the sync.
+- `Data_ID` is looked up module-wide, not per page: the sync script reads every tab in a module's test-data spreadsheet (regardless of tab name — `Login_Data`, `x_add_data`, `x_delete_data`, anything) into one `Data_ID → data` map for that module. A `Data_ID` duplicated across two data tabs in the same module fails the sync.
+- `SubModule` may be blank for a row (e.g. a menu with no submodule split). Those rows are written to `src/data/<module>/<page>.json` at the module root instead of a submodule subfolder; the Loader checks both locations when `SUBMODULE` isn't given.
 - **Test runs never call the Google Sheets API.** `engine/loader.ts` only reads local JSON. This makes runs fast, offline-capable, and CI-safe (no API quota/flakiness).
 - Because the data is committed, **`git diff` on `src/data/` shows exactly what test cases or test data changed** between runs — this is the whole point: reviewers see data changes the same way they see code changes, and a bad edit in the sheet is caught in code review before it ever runs.
 - Never hand-edit files under `src/data/` — fix the sheet, then re-sync. The sync script resolves `Data_ID` into a `data` object per row so the Loader never does a second lookup.

@@ -53,31 +53,19 @@ function resolveData(
 
 }
 
-function matchesDataTab(title: string, page: string): boolean {
-
-    const normalizedTitle = title.toLowerCase();
-    const normalizedPage = page.toLowerCase();
-
-    return normalizedTitle === normalizedPage || normalizedTitle.startsWith(`${normalizedPage}_`);
-
-}
-
 async function loadDataById(
     testDataSheetId: string,
     dataTabTitles: string[],
-    page: string,
     context: string
 ): Promise<Map<string, Record<string, unknown>>> {
 
-    const matchingTitles = dataTabTitles.filter(title => matchesDataTab(title, page));
-
     const rowsPerTitle = await Promise.all(
-        matchingTitles.map(title => getSheetValues(testDataSheetId, title))
+        dataTabTitles.map(title => getSheetValues(testDataSheetId, title))
     );
 
     const dataById = new Map<string, Record<string, unknown>>();
 
-    matchingTitles.forEach((title, index) => {
+    dataTabTitles.forEach((title, index) => {
 
         for (const row of toRecords(rowsPerTitle[index])) {
 
@@ -99,11 +87,13 @@ async function loadDataById(
 
 }
 
+const OPTIONAL_COLUMNS: readonly string[] = [SHEET_COLUMNS.SUB_MODULE];
+
 function assertRequiredColumns(row: Record<string, string>, context: string): void {
 
     for (const column of Object.values(SHEET_COLUMNS)) {
 
-        if (!row[column]) {
+        if (!row[column] && !OPTIONAL_COLUMNS.includes(column)) {
             throw new Error(`${context}: missing required column "${column}"`);
         }
 
@@ -174,7 +164,9 @@ function groupBySubModule(testCases: TestCase[]): Map<string, TestCase[]> {
 
 function writeTestCases(module: string, subModule: string, page: string, testCases: TestCase[]): void {
 
-    const dir = path.resolve(DATA_DIR, module, subModule);
+    const dir = subModule
+        ? path.resolve(DATA_DIR, module, subModule)
+        : path.resolve(DATA_DIR, module);
 
     fs.mkdirSync(dir, { recursive: true });
 
@@ -189,16 +181,12 @@ async function syncTab(
     module: string,
     page: string,
     testCaseSheetId: string,
-    testDataSheetId: string,
-    dataTabTitles: string[]
+    dataById: Map<string, Record<string, unknown>>
 ): Promise<void> {
 
     const context = `${module}/${page}`;
 
-    const [caseRows, dataById] = await Promise.all([
-        getSheetValues(testCaseSheetId, page),
-        loadDataById(testDataSheetId, dataTabTitles, page, context)
-    ]);
+    const caseRows = await getSheetValues(testCaseSheetId, page);
 
     const testCases = toRecords(caseRows).map(row => toTestCase(row, dataById, context));
 
@@ -221,10 +209,12 @@ async function syncModule(module: string): Promise<void> {
         listSheetTitles(testDataSheetId)
     ]);
 
+    const dataById = await loadDataById(testDataSheetId, dataTabTitles, module);
+
     for (const page of pages) {
 
         console.log(`  ${module}/${page}`);
-        await syncTab(module, page, testCaseSheetId, testDataSheetId, dataTabTitles);
+        await syncTab(module, page, testCaseSheetId, dataById);
 
     }
 

@@ -19,6 +19,10 @@ export interface TestCase {
 
     subModule: string;                  // SubModule
 
+    module: string;                     // Derived from the sheet file / data folder name
+
+    page: string;                       // Derived from the sheet tab / data file name
+
     data: Record<string, unknown>;      // Resolved from Data_ID by the Loader
 
 }

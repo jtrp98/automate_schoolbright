@@ -2,7 +2,6 @@ import { test } from "@playwright/test";
 import { getRunParams } from "../src/engine/cli";
 import { loadTestCases } from "../src/engine/loader";
 import { resolveExecutor } from "../src/engine/registry";
-import { logStart, logEnd } from "../src/engine/runner";
 import { BaseAction } from "../src/action/baseaction";
 
 const params = getRunParams();
@@ -18,9 +17,9 @@ for (const tc of cases) {
             test.skip(!tc.enable, "Disabled in sheet");
 
             const executor = await resolveExecutor(
-                params.module,
+                tc.module,
                 tc.subModule,
-                params.page
+                tc.page
             );
 
             const workflow = executor[tc.function];
@@ -33,15 +32,10 @@ for (const tc of cases) {
 
             }
 
-            const startedAt = Date.now();
-            logStart(tc);
-
             await workflow(
                 { page, action: new BaseAction(page) },
                 tc
             );
-
-            logEnd(tc, Date.now() - startedAt);
 
         }
     );

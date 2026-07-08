@@ -7,6 +7,8 @@
     "dataId": "LOGIN-001",
     "enable": true,
     "subModule": "Login",
+    "module": "personal-info",
+    "page": "Login",
     "data": {
       "School": "Tangmo school (Test)",
       "Username": "10010",
@@ -22,6 +24,8 @@
     "dataId": "LOGIN-002",
     "enable": true,
     "subModule": "Login",
+    "module": "personal-info",
+    "page": "Login",
     "data": {
       "School": "Tangmo school (Test)",
       "Username": "10010",
@@ -37,6 +41,8 @@
     "dataId": "-",
     "enable": true,
     "subModule": "Login",
+    "module": "personal-info",
+    "page": "Login",
     "data": {}
   }
 ]

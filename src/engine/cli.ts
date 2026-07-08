@@ -3,11 +3,11 @@ import type { AppEnv } from "../config/environment";
 
 export interface RunParams {
 
-    module: string;
+    module?: string;
 
     subModule?: string;
 
-    page: string;
+    page?: string;
 
     runMode: RunMode;
 
@@ -17,25 +17,10 @@ export interface RunParams {
 
 export function getRunParams(): RunParams {
 
-    const module = process.env.MODULE;
-    const page = process.env.PAGE;
-
-    if (!module) {
-
-        throw new Error("Missing required environment variable: MODULE");
-
-    }
-
-    if (!page) {
-
-        throw new Error("Missing required environment variable: PAGE");
-
-    }
-
     return {
-        module,
+        module: process.env.MODULE,
         subModule: process.env.SUBMODULE,
-        page,
+        page: process.env.PAGE,
         runMode: (process.env.RUNMODE as RunMode | undefined) ?? "normal",
         env: (process.env.ENV as AppEnv | undefined) ?? "dev"
     };

@@ -103,6 +103,8 @@ function assertRequiredColumns(row: Record<string, string>, context: string): vo
 
 function toTestCase(
     row: Record<string, string>,
+    module: string,
+    page: string,
     dataById: Map<string, Record<string, unknown>>,
     context: string
 ): TestCase {
@@ -125,6 +127,8 @@ function toTestCase(
         dataId,
         enable: row[SHEET_COLUMNS.ENABLE].toUpperCase() === "TRUE",
         subModule: row[SHEET_COLUMNS.SUB_MODULE],
+        module,
+        page,
         data: resolveData(dataId, dataById, `${context} (${tcId})`)
     };
 
@@ -188,7 +192,7 @@ async function syncTab(
 
     const caseRows = await getSheetValues(testCaseSheetId, page);
 
-    const testCases = toRecords(caseRows).map(row => toTestCase(row, dataById, context));
+    const testCases = toRecords(caseRows).map(row => toTestCase(row, module, page, dataById, context));
 
     assertUniqueTcIds(testCases, context);
 
@@ -204,6 +208,11 @@ async function syncModule(module: string): Promise<void> {
 
     const { testCaseSheetId, testDataSheetId } = Environment.getModuleSheetIds(module);
 
+    if (!testCaseSheetId || !testDataSheetId) {
+        // console.log(`Skipping ${module}: no Google Sheet configured.`);
+        return;
+    }
+
     const [pages, dataTabTitles] = await Promise.all([
         listSheetTitles(testCaseSheetId),
         listSheetTitles(testDataSheetId)
@@ -213,7 +222,7 @@ async function syncModule(module: string): Promise<void> {
 
     for (const page of pages) {
 
-        console.log(`  ${module}/${page}`);
+        // console.log(`  ${module}/${page}`);
         await syncTab(module, page, testCaseSheetId, dataById);
 
     }
@@ -224,18 +233,18 @@ async function main(): Promise<void> {
 
     for (const module of SHEET_MODULES) {
 
-        console.log(`Syncing ${module}...`);
+        // console.log(`Syncing ${module}...`);
         await syncModule(module);
 
     }
 
-    console.log("Sync complete.");
+    // console.log("Sync complete.");
 
 }
 
 main().catch(error => {
 
-    console.error(error);
+    // console.error(error);
     process.exitCode = 1;
 
 });

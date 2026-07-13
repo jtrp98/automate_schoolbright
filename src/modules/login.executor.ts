@@ -15,8 +15,7 @@ export const executor: ExecutorMap = {
 
         const { School, Username, Password, Expected } = tc.data as LoginData;
         const loginPage = new LoginPage(ctx.page, ctx.action);
-
-        if (tc.mode == "full") {
+        if (Expected == "-") {
 
             await loginPage.loginBypass();
             await loginPage.waitForDashboard();

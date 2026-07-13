@@ -1,0 +1,94 @@
+[
+  {
+    "tcId": "TC_0001",
+    "expected": "ตั้งค่าโรงเรียน",
+    "function": "UpdateSetting",
+    "mode": "smoke",
+    "dataId": "SCHOOLSETTING-001",
+    "enable": true,
+    "subModule": "schoolSetting",
+    "module": "initial-setup",
+    "page": "schoolsetting",
+    "data": {
+      "ScanOut": "TRUE",
+      "ClassNameDisable": "",
+      "expected": "บันทึกข้อมูลเรียบร้อยแล้ว"
+    }
+  },
+  {
+    "tcId": "TC_0002",
+    "expected": "ตั้งค่าโรงเรียน",
+    "function": "UpdateSetting",
+    "mode": "normal",
+    "dataId": "SCHOOLSETTING-002",
+    "enable": true,
+    "subModule": "schoolSetting",
+    "module": "initial-setup",
+    "page": "schoolsetting",
+    "data": {
+      "ScanOut": "FALSE",
+      "ClassNameDisable": "",
+      "expected": "บันทึกข้อมูลเรียบร้อยแล้ว"
+    }
+  },
+  {
+    "tcId": "TC_0003",
+    "expected": "ตั้งค่าโรงเรียน",
+    "function": "UpdateSetting",
+    "mode": "normal",
+    "dataId": "SCHOOLSETTING-003",
+    "enable": true,
+    "subModule": "schoolSetting",
+    "module": "initial-setup",
+    "page": "schoolsetting",
+    "data": {
+      "ScanOut": "",
+      "ClassNameDisable": "TRUE",
+      "expected": "บันทึกข้อมูลเรียบร้อยแล้ว"
+    }
+  },
+  {
+    "tcId": "TC_0004",
+    "expected": "ตั้งค่าโรงเรียน",
+    "function": "UpdateSetting",
+    "mode": "normal",
+    "dataId": "SCHOOLSETTING-004",
+    "enable": true,
+    "subModule": "schoolSetting",
+    "module": "initial-setup",
+    "page": "schoolsetting",
+    "data": {
+      "ScanOut": "",
+      "ClassNameDisable": "FALSE",
+      "expected": "บันทึกข้อมูลเรียบร้อยแล้ว"
+    }
+  },
+  {
+    "tcId": "TC_0005",
+    "expected": "ตั้งค่าโรงเรียน",
+    "function": "UpdateSetting",
+    "mode": "regression",
+    "dataId": "SCHOOLSETTING-005",
+    "enable": true,
+    "subModule": "schoolSetting",
+    "module": "initial-setup",
+    "page": "schoolsetting",
+    "data": {
+      "ScanOut": "TRUE",
+      "ClassNameDisable": "TRUE",
+      "expected": "บันทึกข้อมูลเรียบร้อยแล้ว"
+    }
+  },
+  {
+    "tcId": "TC_0006",
+    "expected": "ตั้งค่าโรงเรียน",
+    "function": "UpdateSetting",
+    "mode": "normal",
+    "dataId": "-",
+    "enable": true,
+    "subModule": "schoolSetting",
+    "module": "initial-setup",
+    "page": "schoolsetting",
+    "data": {}
+  }
+]

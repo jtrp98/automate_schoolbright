@@ -7,7 +7,7 @@
     "dataId": "LOGIN-001",
     "enable": true,
     "subModule": "Login",
-    "module": "personal-info",
+    "module": "initial-setup",
     "page": "Login",
     "data": {
       "School": "Tangmo school (Test)",
@@ -24,13 +24,13 @@
     "dataId": "LOGIN-002",
     "enable": true,
     "subModule": "Login",
-    "module": "personal-info",
+    "module": "initial-setup",
     "page": "Login",
     "data": {
       "School": "Tangmo school (Test)",
       "Username": "10010",
       "Password": "wrong",
-      "Expected": "ไม่สามารถเข้าสู่ระบบได้ กรุณาตรวจสอบชื่อผู้ใช้หรือรหัสผ่านของท่านอีกครั้ง"
+      "Expected": "ไม่สามารถเข้าสู่ระบบได้กรุณาตรวจสอบชื่อผู้ใช้หรือรหัสผ่านของท่านอีกครั้ง"
     }
   },
   {
@@ -41,7 +41,7 @@
     "dataId": "-",
     "enable": true,
     "subModule": "Login",
-    "module": "personal-info",
+    "module": "initial-setup",
     "page": "Login",
     "data": {}
   }

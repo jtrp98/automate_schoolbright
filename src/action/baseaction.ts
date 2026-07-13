@@ -95,7 +95,6 @@ export class BaseAction {
     async hasModalMessage(text: string, selector = "#modal-content"): Promise<boolean> {
 
         const message = await this.getModalMessage(selector);
-
         return message?.includes(text) ?? false;
 
     }
